@@ -43,6 +43,6 @@ public class Student {
     }
 
     enum Gender{
-        MALE, FEMELE
+        MALE, FEMALE
     }
 }

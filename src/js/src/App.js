@@ -8,17 +8,25 @@ import {
 	Spin
 } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import Footer from './Footer';
+import Modal from 'antd/lib/modal/Modal';
+import AddStudentForm from './forms/AddStudentForms'
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 class App extends Component {
 
 	state = {
 		students: [],
-		isFetching: false
+		isFetching: false,
+		isAddStuudentModalVisibility: false
 	}
 	componentDidMount () {
 		this.fetchStudents();
 	}
+	openAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: true})
+
+	closeAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: false})
+
 	fetchStudents = () => {
 		this.setState({
 			isFetching: true
@@ -32,7 +40,7 @@ class App extends Component {
 	}
 	
 	render() {
-		const {students, isFetching} = this.state;
+		const {students, isFetching, isAddStuudentModalVisibility} = this.state;
 		if(isFetching) {
 			return (
 				<div className='spinner'>
@@ -90,6 +98,17 @@ class App extends Component {
 						rowKey='studentId'
 						pagination= {false}
 					/>
+					<Modal 
+						title='Add new student'
+						visible={isAddStuudentModalVisibility}
+						onOk={this.closeAddStuudentModal}
+						onCancel={this.closeAddStuudentModal}
+						width={1000}>
+							<h1>Hello Madal with Antd</h1>
+							<AddStudentForm/>
+						</Modal>
+					<Footer numberOfStudents={students.length}
+					handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
 				</Conteiner>
 			);
 		}
