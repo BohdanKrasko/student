@@ -10,7 +10,7 @@ import {
 import { LoadingOutlined } from '@ant-design/icons';
 import Footer from './Footer';
 import Modal from 'antd/lib/modal/Modal';
-import AddStudentForm from './forms/AddStudentForms'
+import AddStudentForm from './forms/AddStudentForms';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 class App extends Component {
@@ -92,7 +92,7 @@ class App extends Component {
 			];
 			return (
 				<Conteiner>
-					<Table 
+					<Table style={{marginBottom:'100px'}}
 						dataSource={students} 
 						columns={columns} 
 						rowKey='studentId'
@@ -103,10 +103,17 @@ class App extends Component {
 						visible={isAddStuudentModalVisibility}
 						onOk={this.closeAddStuudentModal}
 						onCancel={this.closeAddStuudentModal}
+						cancelText={true}
+						okText={true}
 						width={1000}>
-							<h1>Hello Madal with Antd</h1>
-							<AddStudentForm/>
-						</Modal>
+							<AddStudentForm 
+							onSuccess = {() =>
+								{
+									this.closeAddStuudentModal();
+									this.fetchStudents();
+								}
+							}/>
+						</Modal >
 					<Footer numberOfStudents={students.length}
 					handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
 				</Conteiner>

@@ -1,14 +1,16 @@
 package com.student.demo.student;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 public class Student {
 
-    private final UUID studentId;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
-    private final Gender gender;
+    private final @JsonProperty("studentId") UUID studentId;
+    private final @JsonProperty("firstName") String firstName;
+    private final @JsonProperty("lastName") String lastName;
+    private final @JsonProperty("email") String email;
+    private final @JsonProperty("gender") Gender gender;
 
     public Student(UUID studentId,
                    String firstName,
@@ -40,6 +42,17 @@ public class Student {
 
     public Gender getGender() {
         return gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId=" + studentId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", gender=" + gender +
+                '}';
     }
 
     enum Gender{
