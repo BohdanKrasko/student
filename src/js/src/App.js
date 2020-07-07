@@ -5,12 +5,14 @@ import Conteiner from './Conteiner';
 import {
 	Table,
 	Avatar,
-	Spin
+	Spin,
+	Empty
 } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Footer from './Footer';
 import Modal from 'antd/lib/modal/Modal';
 import AddStudentForm from './forms/AddStudentForms';
+import { errorNotification } from './notification';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 class App extends Component {
@@ -36,7 +38,14 @@ class App extends Component {
 		.then(students => {
 			console.log(students)
 			this.setState({students, isFetching: false})
-		}));
+		})).catch(error => {
+			const message = error.error.message;
+			const description = error.error.error;
+			errorNotification(message, description);
+			this.setState({
+				isFetching:false
+			})
+		})
 	}
 	
 	render() {
@@ -48,7 +57,31 @@ class App extends Component {
 				</div>			
 			)
 		}
+		const commonElements = () => (
+			<div>
+				<Modal 
+					title='Add new student'
+					visible={isAddStuudentModalVisibility}
+					onOk={this.closeAddStuudentModal}
+					onCancel={this.closeAddStuudentModal}
+					cancelText={true}
+					okText={true}
+					width={1000}>
+						<AddStudentForm 
+						onSuccess = {() =>
+							{
+								this.closeAddStuudentModal();
+								this.fetchStudents();
+							}
+						}/>
+					</Modal >
+				<Footer numberOfStudents={students.length}
+				handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
+			</div>
+		)  
+		
 		if(students && students.length) {
+				
 			const columns = [
 				{
 					title: '',
@@ -98,28 +131,21 @@ class App extends Component {
 						rowKey='studentId'
 						pagination= {false}
 					/>
-					<Modal 
-						title='Add new student'
-						visible={isAddStuudentModalVisibility}
-						onOk={this.closeAddStuudentModal}
-						onCancel={this.closeAddStuudentModal}
-						cancelText={true}
-						okText={true}
-						width={1000}>
-							<AddStudentForm 
-							onSuccess = {() =>
-								{
-									this.closeAddStuudentModal();
-									this.fetchStudents();
-								}
-							}/>
-						</Modal >
-					<Footer numberOfStudents={students.length}
-					handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
+					{commonElements()}
 				</Conteiner>
 			);
 		}
-		return <h1>No Students found</h1>;
+		return (<Conteiner>
+			<Empty 
+				style={{marginTop:'9em' }}
+				image={Empty.PRESENTED_IMAGE_SIMPLE}
+				description={
+					<h1>No student found</h1>
+				}
+				/>
+			{commonElements()};
+		</Conteiner>
+		);
 	}
 	
 }

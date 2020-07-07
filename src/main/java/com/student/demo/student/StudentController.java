@@ -1,5 +1,6 @@
 package com.student.demo.student;
 
+import com.student.demo.exeptions.ApiRequstExeption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,9 @@ public class StudentController {
 
     @GetMapping // ("get")
     public List<Student> getGetAllStudents() {
-        return studentService.getAllStudent();
+        throw new ApiRequstExeption("Opps something wrong");
+        //throw new IllegalStateException("Opps something wrong");
+        //return studentService.getAllStudent();
     }
 
     @PostMapping

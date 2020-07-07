@@ -1,13 +1,11 @@
 import React from 'react';
 import { Formik } from 'formik';
-import {Input, Button, Tag, Modal} from 'antd';
+import {Input, Button, Tag } from 'antd';
 import { addNewStudent } from '../client'
+import { successNotification } from '../notification';
+
 const marginBottom = {marginBottom: '10px'};
-const success = () => {
-  Modal.success({
-    content: 'You successfully added new student',
-  });
-}
+
 const AddStudentForm = (props) => 
   (
     <Formik
@@ -40,7 +38,7 @@ const AddStudentForm = (props) =>
           addNewStudent(values).then(() => {
             props.onSuccess();
             setSubmitting(false);
-            success();
+            successNotification('Congratulation!', 'You successfully added new student');
           })
           
       }}
