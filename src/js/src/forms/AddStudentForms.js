@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import {Input, Button, Tag } from 'antd';
 import { addNewStudent } from '../client'
-import { successNotification } from '../notification';
+import { successNotification, errorNotification } from '../notification';
 
 const marginBottom = {marginBottom: '10px'};
 
@@ -39,6 +39,11 @@ const AddStudentForm = (props) =>
             props.onSuccess();
             setSubmitting(false);
             successNotification('Congratulation!', 'You successfully added new student');
+          }).catch(error => {
+            const message = error.error.message;
+			      const description = error.error.error;
+            errorNotification(message, description);
+            setSubmitting(false);
           })
           
       }}

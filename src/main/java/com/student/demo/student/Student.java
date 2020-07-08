@@ -2,21 +2,29 @@ package com.student.demo.student;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class Student {
 
-    private final @JsonProperty("studentId") UUID studentId;
-    private final @JsonProperty("firstName") String firstName;
-    private final @JsonProperty("lastName") String lastName;
-    private final @JsonProperty("email") String email;
-    private final @JsonProperty("gender") Gender gender;
+    private final UUID studentId;
+    @NotBlank
+    private final String firstName;
+    @NotBlank
+    private final String lastName;
+    @NotBlank
+    private final String email;
+    @NotNull
+    private final Gender gender;
 
-    public Student(UUID studentId,
-                   String firstName,
-                   String lastName,
-                   String email,
-                   Gender gender) {
+    public Student(@JsonProperty("studentId") UUID studentId,
+                   @JsonProperty("firstName") String firstName,
+                   @JsonProperty("lastName") String lastName,
+                   @JsonProperty("email") String email,
+                   @JsonProperty("gender") Gender gender) {
         this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;

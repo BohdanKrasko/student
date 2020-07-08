@@ -6,34 +6,31 @@ import java.time.ZonedDateTime;
 
 public class ApiExeption {
 
-    private final HttpStatus httpStatus;
-    private final String message;
     private final ZonedDateTime timestamp;
+    private final HttpStatus httpStatus;
     private final String error;
-
-    public String getError() {
-        return error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
+    private final String message;
 
     public ZonedDateTime getTimestamp() {
         return timestamp;
     }
-
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }
+    public String getError() {
+        return error;
+    }
+    public String getMessage() {
+        return message;
+    }
 
-    public ApiExeption(HttpStatus httpStatus,
-                       String message,
-                       ZonedDateTime timestamp,
-                       String error) {
-        this.httpStatus = httpStatus;
-        this.message = message;
+    public ApiExeption(ZonedDateTime timestamp,
+                       HttpStatus httpStatus,
+                       String error,
+                       String message) {
         this.timestamp = timestamp;
+        this.httpStatus = httpStatus;
         this.error = error;
+        this.message = message;
     }
 }

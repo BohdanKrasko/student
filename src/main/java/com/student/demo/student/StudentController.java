@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("students")
@@ -22,13 +25,11 @@ public class StudentController {
 
     @GetMapping // ("get")
     public List<Student> getGetAllStudents() {
-        throw new ApiRequstExeption("Opps something wrong");
-        //throw new IllegalStateException("Opps something wrong");
-        //return studentService.getAllStudent();
+        return studentService.getAllStudent();
     }
 
     @PostMapping
-    public void addNewStudent(@RequestBody Student student) {
+    public void addNewStudent(@RequestBody @Valid Student student) {
         studentService.addNewStudent(student);
     }
 }

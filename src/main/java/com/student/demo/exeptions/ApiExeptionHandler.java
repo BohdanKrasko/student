@@ -14,10 +14,21 @@ public class ApiExeptionHandler {
     public ResponseEntity<Object> handleApiRequestExeption(ApiRequstExeption e) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ApiExeption apiExeption = new ApiExeption(
+                ZonedDateTime.now(),
+                badRequest,
+                "Please wait for a few minutes, we try to fix it",
+                e.getMessage());
+        return new ResponseEntity<>(apiExeption, badRequest);
+    }
+
+    @ExceptionHandler(ApiEmailExeption.class)
+    public ResponseEntity<Object> handleApiEmailExeption(ApiEmailExeption e) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        ApiExeption apiExeption = new ApiExeption(
+                ZonedDateTime.now(),
                 badRequest,
                 e.getMessage(),
-                ZonedDateTime.now(),
-                "Please wait for a few minutes, we try to fix it");
+                "Wrong email");
         return new ResponseEntity<>(apiExeption, badRequest);
     }
 }

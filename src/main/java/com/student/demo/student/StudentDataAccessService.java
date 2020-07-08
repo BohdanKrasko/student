@@ -18,7 +18,7 @@ public class StudentDataAccessService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    List<Student> selectAlllStudents() {
+    List<Student> selectAllStudents() {
         String sql = "" +
                 "SELECT student_id, " +
                 "first_name, " +
@@ -27,6 +27,14 @@ public class StudentDataAccessService {
                 "gender " +
                 "FROM student";
         return jdbcTemplate.query(sql, mapStudentFromDb());
+    }
+    List<String> selectAllEmails() {
+        String sql = "" +
+                "SELECT " +
+                "email " +
+                "FROM student";
+        return jdbcTemplate.query(sql, mapEmailsFromDb());
+
     }
     int insertNewStudent(UUID studnetId, Student student) {
         String sql = "" +
@@ -53,6 +61,9 @@ public class StudentDataAccessService {
             Student.Gender gender = Student.Gender.valueOf(genderStr);
             return new Student(studentId, fisrtName, lastName, email, gender);
         };
+    }
+    private RowMapper<String> mapEmailsFromDb() {
+        return (resultSet, i) -> resultSet.getString("email");
     }
 
 }
