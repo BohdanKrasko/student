@@ -28,18 +28,26 @@ public class StudentDataAccessService {
                 "FROM student";
         return jdbcTemplate.query(sql, mapStudentFromDb());
     }
-    List<String> selectAllEmails() {
+   //SELECT email FROM student WHERE EXISTS(SELECT 1 FROM student s WHERE s.email = ?);
+   @SuppressWarnings("ConstantConditions")
+   boolean isEmailTaken(String email) {
         String sql = "" +
-                "SELECT " +
-                "email " +
-                "FROM student";
-        return jdbcTemplate.query(sql, mapEmailsFromDb());
+                "SELECT EXISTS (" +
+                "SELECT 1 " +
+                "FROM student " +
+                "WHERE email = ?" +
+                ")";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{email},
+                (resultSet, i) -> resultSet.getBoolean(1));
 
     }
     int insertNewStudent(UUID studnetId, Student student) {
         String sql = "" +
                 "INSERT INTO student (student_id, first_name, last_name, email, gender) " +
-                "VALUES (?,?,?,?,?)";
+                "VALUES (?,?,?,?,?::gender)";
         return jdbcTemplate.update(
                 sql,
                 studnetId,
@@ -61,9 +69,6 @@ public class StudentDataAccessService {
             Student.Gender gender = Student.Gender.valueOf(genderStr);
             return new Student(studentId, fisrtName, lastName, email, gender);
         };
-    }
-    private RowMapper<String> mapEmailsFromDb() {
-        return (resultSet, i) -> resultSet.getString("email");
     }
 
 }

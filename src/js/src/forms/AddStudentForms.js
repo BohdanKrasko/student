@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik } from 'formik';
 import {Input, Button, Tag } from 'antd';
 import { addNewStudent } from '../client'
-import { successNotification, errorNotification } from '../notification';
 
 const marginBottom = {marginBottom: '10px'};
 
@@ -37,14 +36,9 @@ const AddStudentForm = (props) =>
       onSubmit={(values, { setSubmitting }) => {
           addNewStudent(values).then(() => {
             props.onSuccess();
-            setSubmitting(false);
-            successNotification('Congratulation!', 'You successfully added new student');
           }).catch(error => {
-            const message = error.error.message;
-			      const description = error.error.error;
-            errorNotification(message, description);
-            setSubmitting(false);
-          })
+            props.onFailuer(error);
+          }).finally(setSubmitting(false))
           
       }}
     >

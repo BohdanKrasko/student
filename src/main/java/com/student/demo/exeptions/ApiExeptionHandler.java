@@ -28,7 +28,7 @@ public class ApiExeptionHandler {
                 ZonedDateTime.now(),
                 badRequest,
                 e.getMessage(),
-                "Wrong email");
+                "Error");
         return new ResponseEntity<>(apiExeption, badRequest);
     }
 }

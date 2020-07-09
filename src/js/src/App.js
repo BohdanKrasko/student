@@ -12,7 +12,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import Footer from './Footer';
 import Modal from 'antd/lib/modal/Modal';
 import AddStudentForm from './forms/AddStudentForms';
-import { errorNotification } from './notification';
+import { errorNotification, successNotification } from './notification';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 class App extends Component {
@@ -68,12 +68,18 @@ class App extends Component {
 					okText={true}
 					width={1000}>
 						<AddStudentForm 
-						onSuccess = {() =>
+							onSuccess = {() =>
 							{
 								this.closeAddStuudentModal();
 								this.fetchStudents();
-							}
-						}/>
+								successNotification('Congratulation!', 'You successfully added new student');
+							}}
+							onFailuer = {error => {
+								const message = error.error.message;
+								const description = error.error.error;
+								errorNotification(message, description);
+							}}
+							/>
 					</Modal >
 				<Footer numberOfStudents={students.length}
 				handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>

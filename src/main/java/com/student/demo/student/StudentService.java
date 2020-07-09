@@ -36,7 +36,9 @@ public class StudentService {
         if (!emailValidator.test(student.getEmail())) {
             throw new ApiEmailExeption(student.getEmail() + " is not valid");
         }
-       // emailValidator.emailValidation(student.getEmail());
+        if (dataAccessService.isEmailTaken(student.getEmail())) {
+            throw new ApiEmailExeption(student.getEmail() + " is taken");
+        }
         dataAccessService.insertNewStudent(newStudnetId, student);
     }
 }
