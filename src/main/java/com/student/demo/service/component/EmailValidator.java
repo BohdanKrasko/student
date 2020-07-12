@@ -1,4 +1,4 @@
-package com.student.demo.student;
+package com.student.demo.service.component;
 
 import com.student.demo.exeptions.ApiEmailExeption;
 import org.springframework.beans.factory.annotation.Autowired;

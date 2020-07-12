@@ -16,6 +16,10 @@ const checkStatus = response => {
 export const getAllStudents = ()  => 
     fetch('/api/students').then(checkStatus);
 
+export const getAllStudentCourse = (studentId) => 
+    fetch(`/api/students/${studentId}/course`)
+    .then(checkStatus);
+
 export const addNewStudent = student => 
 fetch('/api/students', {
     headers: {

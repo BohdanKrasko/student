@@ -6,7 +6,8 @@ import {
 	Table,
 	Avatar,
 	Spin,
-	Empty
+	Empty,
+	Button
 } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Footer from './Footer';
@@ -127,7 +128,15 @@ class App extends Component {
 					title: 'Email',
 					dataIndex: 'email',
 					key: 'email'
+				},
+				{
+					title: '',
+					key: 'course',
+					render: (text, student) => (
+						<Button type='link' href='/courses'>Courses</Button>
+					)
 				}
+			
 			];
 			return (
 				<Conteiner>
