@@ -14,12 +14,6 @@ import Footer from '../Footer';
 import Modal from 'antd/lib/modal/Modal';
 import AddStudentForm from '../forms/AddStudentForms';
 import { errorNotification, successNotification } from '../notification';
-import { 
-	BrowserRouter as Router,
-	Route, 
-	Switch, 
-	Link, 
-	Redirect} from 'react-router-dom';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 class Students extends Component {

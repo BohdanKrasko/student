@@ -1,25 +1,89 @@
 import React, {Component} from 'react';
+import {getAllStudentCourse} from '../client';
+import {Table} from 'antd';
+import Conteiner from '../Conteiner';
 
 
 class Courses extends Component {
 
    state = {
-      studentId: ''
+      studentId: '',
+      courses: []
    }
    componentDidMount () {
-      const studentId = this.props.match.params.studentId;
-      console.log(studentId);
-      this.setState({studentId});
+      
+      this.fetchStudentCourses();
     }
 
+   fetchStudentCourses = () => {
+      const studentId = this.props.match.params.studentId;
+      this.setState({studentId});
+      getAllStudentCourse(studentId)
+         .then(res => res.json())
+         .then(course => {
+            console.log(course);
+            this.setState({courses: course})
+         });
+   } 
     render() {
-       const {studentId} = this.state;
-      return (
-         <div>
-            <h1>{studentId}</h1>
-            
-         </div>
-      );
+      const {courses} = this.state;
+      //if(courses && courses.length) {
+
+         const columns = [
+            {
+               title: 'Course Id',
+               dataIndex: 'courseId',
+               key: 'courseId'
+            },
+            {
+               title: 'Department',
+               dataIndex: 'department',
+               key: 'department'
+            },
+            {
+               title: 'Description',
+               dataIndex: 'description',
+               key: 'description'
+            },
+            {
+               title: 'Grade',
+               dataIndex: 'grade',
+               key: 'grade'
+            },
+            {
+               title: 'Name',
+               dataIndex: 'name',
+               key: 'name'
+            },
+            {
+               title: 'Start Date',
+               dataIndex: 'startDate',
+               key: 'startDate'
+            },
+            {
+               title: 'End Date',
+               dataIndex: 'endDate',
+               key: 'endDate'
+            },
+            {
+               title: 'Teacher Name',
+               dataIndex: 'teacherName',
+               key: 'teacherName'
+            }
+         ]
+        
+         return (
+            <Conteiner>
+               <Table 
+                  dataSource={courses} 
+                  columns={columns}
+                  rowKey='courseId'
+                  pagination= {false}
+                  />
+            </Conteiner>
+         )
+      //}
+      
     }
 }
  
