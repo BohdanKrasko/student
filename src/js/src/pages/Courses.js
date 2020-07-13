@@ -1,33 +1,52 @@
 import React, {Component} from 'react';
 import {getAllStudentCourse} from '../client';
-import {Table} from 'antd';
+import {Table, Empty} from 'antd';
 import Conteiner from '../Conteiner';
+import {infoNotification} from '../notification';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
+
+const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 class Courses extends Component {
 
    state = {
+      courses: [],
       studentId: '',
-      courses: []
+      isFetching: false
    }
    componentDidMount () {
-      
       this.fetchStudentCourses();
     }
 
    fetchStudentCourses = () => {
+      this.setState({isFetching: true})
       const studentId = this.props.match.params.studentId;
       this.setState({studentId});
       getAllStudentCourse(studentId)
          .then(res => res.json())
          .then(course => {
-            console.log(course);
             this.setState({courses: course})
-         });
+            this.setState({isFetching: false})
+         }).catch(err => {
+            const error = err.error.error;
+            const description = err.error.description;
+            infoNotification(error, description);
+            this.setState({isFetching: false})
+            
+         })
    } 
     render() {
-      const {courses} = this.state;
-      //if(courses && courses.length) {
+      const {courses, isFetching} = this.state;
+      if(isFetching) {
+         return (
+            <div className='spinner'>
+               <Spin indicator={antIcon()} />
+            </div>
+         )
+      }
+      if(courses && courses.length) {
 
          const columns = [
             {
@@ -82,7 +101,19 @@ class Courses extends Component {
                   />
             </Conteiner>
          )
-      //}
+      } else {
+         return (<Conteiner>
+            <Empty 
+               style={{marginTop:'9em' }}
+               image={Empty.PRESENTED_IMAGE_SIMPLE}
+               description={
+                  <h1>No course found</h1>
+               }
+               />
+         </Conteiner>
+         );
+      }
+      
       
     }
 }

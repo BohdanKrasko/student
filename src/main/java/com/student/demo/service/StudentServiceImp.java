@@ -47,12 +47,6 @@ public class StudentServiceImp implements StudentService{
 
     @Override
     public List<StudentCourse> getAllStudentCourse(UUID studentId) {
-        List<StudentCourse> studentCourses = dataAccessService.selectAllStudentCourse().stream()
-                .filter(student -> student.getStudentId().equals(studentId))
-                .collect(Collectors.toList());
-        if (studentCourses.isEmpty()) {
-            throw new ApiEmailExeption("Student doesn't have course");
-        }
-        return studentCourses;
+        return dataAccessService.selectAllStudentCourse(studentId);
     }
 }
