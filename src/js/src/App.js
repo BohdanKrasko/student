@@ -5,7 +5,6 @@ import {
 	Route} from 'react-router-dom';
 import Courses from './pages/Courses';
 import Students from './pages/Students';
-import Page from './pages/Page'
 
 class App extends Component {
 	render() {
