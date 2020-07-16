@@ -5,14 +5,17 @@ import {
 	Route} from 'react-router-dom';
 import Courses from './pages/Courses';
 import Students from './pages/Students';
+import Page from './pages/Page'
 
 class App extends Component {
 	render() {
 		return (
+		
 			<Router>
+				<Route exact path='/' component={Students}/>
 				<Route exact path='/:studentId/courses' component={Courses}/>
-				<Route exact path='/students' component={Students}/>
 			</Router>
+			
 		)
 	}
 }

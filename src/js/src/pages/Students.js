@@ -14,6 +14,7 @@ import Footer from '../Footer';
 import Modal from 'antd/lib/modal/Modal';
 import AddStudentForm from '../forms/AddStudentForms';
 import { errorNotification, successNotification } from '../notification';
+import { Link } from 'react-router-dom';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 class Students extends Component {
@@ -138,7 +139,7 @@ class Students extends Component {
 					title: '',
 					key: 'course',
 					render: (text, student) => (
-						<Button type='link' href={`/${student.studentId}/courses`} >Courses</Button>
+						<Link to={`/${student.studentId}/courses`}>Course</Link>
 					)
 				}
 			
