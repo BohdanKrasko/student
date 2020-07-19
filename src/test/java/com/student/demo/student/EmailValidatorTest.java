@@ -17,4 +17,5 @@ class EmailValidatorTest {
     void itShouldValidateAnIncorrectEmail() {
         assertThat(underTest.test("example@gmailcom")).isFalse();
     }
+
 }
