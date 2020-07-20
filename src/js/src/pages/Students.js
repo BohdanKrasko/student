@@ -136,6 +136,13 @@ class Students extends Component {
 					render: (text, student) => (
 						<Link to={`/${student.studentId}/courses`}>Course</Link>
 					)
+				},
+				{
+					title: '',
+					key: 'test',
+					render: (text, student) => (
+						<Link to='/test'>Test</Link>
+					)
 				}
 			
 			];
@@ -156,7 +163,7 @@ class Students extends Component {
 				style={{marginTop:'9em' }}
 				image={Empty.PRESENTED_IMAGE_SIMPLE}
 				description={
-					<h1>No student found</h1>
+					'No student found'
 				}
 				/>
 			{commonElements()};

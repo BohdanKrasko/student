@@ -107,7 +107,7 @@ class Courses extends Component {
                style={{marginTop:'9em' }}
                image={Empty.PRESENTED_IMAGE_SIMPLE}
                description={
-                  <h1>No course found</h1>
+                  'No course found'
                }
                />
          </Conteiner>
