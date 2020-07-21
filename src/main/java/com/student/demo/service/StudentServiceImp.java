@@ -7,11 +7,12 @@ import com.student.demo.student.Student;
 import com.student.demo.student.StudentCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.util.Optional.*;
 
 @Service
 public class StudentServiceImp implements StudentService{
@@ -28,14 +29,14 @@ public class StudentServiceImp implements StudentService{
 
     @Override
     public List<Student> getAllStudent() {
-       return Optional.ofNullable(dataAccessService.selectAllStudents())
+       return ofNullable(dataAccessService.selectAllStudents())
                .orElseThrow(() -> new ApiRequstExeption("Opps something wrong"));
     }
 
     @Override
     public void addNewStudent(Student student) {
 
-        UUID newStudnetId = Optional.ofNullable(student.getStudentId()).orElse(UUID.randomUUID());
+        UUID newStudnetId = ofNullable(student.getStudentId()).orElse(UUID.randomUUID());
         if (!emailValidator.test(student.getEmail())) {
             throw new ApiEmailExeption(student.getEmail() + " is not valid");
         }
@@ -48,5 +49,40 @@ public class StudentServiceImp implements StudentService{
     @Override
     public List<StudentCourse> getAllStudentCourse(UUID studentId) {
         return dataAccessService.selectAllStudentCourse(studentId);
+    }
+
+    @Override
+    public void deleteStudent(UUID studentId) {
+        dataAccessService.deleteStudent(studentId);
+    }
+
+    @Override
+    public void updateStudent(UUID studentId, Student student) {
+
+        ofNullable(student.getFirstName())
+                .filter(firstName -> !firstName.isBlank() && !firstName.isEmpty())
+                .map(StringUtils::capitalize)
+                .ifPresent(firstName -> dataAccessService.updateFirstName(studentId, firstName));
+
+        ofNullable(student.getLastName())
+                .filter(lastName -> !lastName.isBlank() && !lastName.isEmpty())
+                .map(StringUtils::capitalize)
+                .ifPresent(lastName -> dataAccessService.updateLastName(studentId, lastName));
+
+        ofNullable(student.getEmail())
+                .filter(email -> !email.isEmpty() && !email.isBlank())
+                .ifPresent(email -> {
+                    boolean isTaken = emailValidator.test(email);
+                    if (!isTaken) {
+                        dataAccessService.updateEmail(studentId, student.getEmail());
+                    } else {
+                        throw new ApiEmailExeption("Email already in use: " + email);
+                    }
+                });
+
+        of(student.getGender().name().toUpperCase())
+                .filter(gender -> gender.equals("MALE") || gender.equals("FEMALE"))
+                .ifPresent(gender -> dataAccessService.updateGender(studentId, gender));
+
     }
 }

@@ -7,8 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,11 +60,11 @@ public class StudentDataAccessService {
                 (resultSet, i) -> resultSet.getBoolean(1));
 
     }
-    int insertNewStudent(UUID studnetId, Student student) {
+    void insertNewStudent(UUID studnetId, Student student) {
         String sql = "" +
                 "INSERT INTO student (student_id, first_name, last_name, email, gender) " +
                 "VALUES (?,?,?,?,?::gender)";
-        return jdbcTemplate.update(
+        jdbcTemplate.update(
                 sql,
                 studnetId,
                 student.getFirstName(),
@@ -74,6 +72,13 @@ public class StudentDataAccessService {
                 student.getEmail(),
                 student.getGender().name().toUpperCase()
         );
+    }
+
+    void deleteStudent(UUID studentId) {
+        String sql = "" +
+                "DELETE FROM student " +
+                "WHERE student_id = ?";
+        jdbcTemplate.update(sql, studentId);
     }
     private RowMapper<Student> mapStudentFromDb() {
         return (resultSet, i) ->
@@ -83,6 +88,46 @@ public class StudentDataAccessService {
                     resultSet.getString("last_name"),
                     resultSet.getString("email"),
                     Student.Gender.valueOf(resultSet.getString("gender").toUpperCase()));
+    }
+    void updateFirstName(UUID studentId, String firstName) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET first_name = ? " +
+                "WHERE student_id = ?";
+        jdbcTemplate.update(
+                sql,
+                firstName,
+                studentId);
+    }
+    void updateLastName(UUID studentId, String lastName) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET last_name = ? " +
+                "WHERE student_id = ?";
+        jdbcTemplate.update(
+                sql,
+                lastName,
+                studentId);
+    }
+    void updateEmail(UUID studentId, String email) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET email = ? " +
+                "WHERE student_id = ?";
+        jdbcTemplate.update(
+                sql,
+                email,
+                studentId);
+    }
+    void updateGender(UUID studentId, String gender) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET gender = ?::gender " +
+                "WHERE student_id = ?";
+        jdbcTemplate.update(
+                sql,
+                gender.toUpperCase(),
+                studentId);
     }
 
     private RowMapper<StudentCourse> getStudentCourseRowMapper() {

@@ -62,6 +62,11 @@
 			<version>3.16.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.11</version>
+		</dependency>
 
 	</dependencies>
 	<profiles>
@@ -147,6 +152,7 @@
 <!--					demo-->
 					default
 				</spring.profiles.active>
+				<maven.test.skip>true</maven.test.skip>
 			</properties>
 		</profile>
 	</profiles>
@@ -158,6 +164,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

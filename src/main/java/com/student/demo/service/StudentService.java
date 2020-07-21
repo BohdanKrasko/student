@@ -13,4 +13,8 @@ public interface StudentService {
     void addNewStudent(Student student);
 
     List<StudentCourse> getAllStudentCourse(UUID studentId);
+
+    void deleteStudent(UUID studentId);
+
+    void updateStudent(UUID studentId, Student student);
 }
