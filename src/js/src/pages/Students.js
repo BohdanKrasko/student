@@ -1,37 +1,55 @@
 import React, {Component} from 'react';
 import '../App.css';
-import { getAllStudents } from '../client';
+import { getAllStudents, deleteStudent } from '../client';
 import Conteiner from '../Conteiner';
 import {
 	Table,
 	Avatar,
 	Spin,
 	Empty,
-	Button
+	Button,
+	Popconfirm
 } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Footer from '../Footer';
 import Modal from 'antd/lib/modal/Modal';
 import AddStudentForm from '../forms/AddStudentForms';
+import EditStudentForm from '../forms/EditStudentForm';
 import { errorNotification, successNotification } from '../notification';
 import { Link } from 'react-router-dom';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const textConfirm = 'Are you sure to delete this task?';
+
 class Students extends Component {
 
 	state = {
 		students: [],
+		selectedStudent: {},
 		isFetching: false,
-		isAddStuudentModalVisibility: false
+		isAddStuudentModalVisibility: false,
+		isEditStudentModalVisibil: false
 	}
 	componentDidMount () {
 		this.fetchStudents();
     }
-   
+
 	openAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: true})
+	openEditStudentModal = () => this.setState({isEditStudentModalVisibil: true})
 
 	closeAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: false})
+	closeEditStudentModal = () => this.setState({isEditStudentModalVisibil: false})
 
+	deleteSt = (id, name) => {
+        deleteStudent(id).then(() => {
+				successNotification(`You delete ${name}`, '')
+				this.fetchStudents()}
+		).catch(err => {console.log(err);})
+	}
+	editStudent = selectedStudent => {
+		this.setState({selectedStudent})
+		this.openEditStudentModal()
+	}
 	fetchStudents = () => {
 		this.setState({
 			isFetching: true
@@ -54,7 +72,7 @@ class Students extends Component {
 	render() {
 
 		
-		const {students, isFetching, isAddStuudentModalVisibility} = this.state;
+		const {students, isFetching, isAddStuudentModalVisibility, isEditStudentModalVisibil} = this.state;
 		if(isFetching) {
 			return (
 				<div className='spinner'>
@@ -91,7 +109,28 @@ class Students extends Component {
 				handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
 
 			</div>
-		)  
+		)
+		
+		const editModal = () => (
+			<div>
+				<Modal
+					visible={isEditStudentModalVisibil}
+					title="Edit"
+					onOk={this.closeEditStudentModal}
+					onCancel={this.closeEditStudentModal}
+					width={1000}
+					footer={[
+					<Button key="back" onClick={this.closeEditStudentModal}>
+						Return
+					</Button>,
+					<Button key="submit" type="primary">
+						Submit
+					</Button>,
+					]}>
+					<EditStudentForm initialValues = {this.state.selectedStudent}></EditStudentForm>
+				</Modal>
+			</div>
+		)
 		
 		if(students && students.length) {
 				
@@ -140,12 +179,32 @@ class Students extends Component {
 				{
 					title: '',
 					key: 'test',
+					render: (text, student) => {
+						return (
+							<Button onClick={() => this.editStudent(student)}>Edit</Button>
+							
+						)
+											
+					}
+				},
+				{
+					title: '',
+					key: 'delete',
 					render: (text, student) => (
-						<Link to='/test'>Test</Link>
+						<Popconfirm placement="topLeft" 
+							title={textConfirm} 
+							onConfirm={() => this.deleteSt(student.studentId, student.firstName)} okText="Yes" cancelText="No"
+							>
+							<Button danger >Delete</Button>
+						  </Popconfirm>
+						  	
 					)
 				}
+				
+				
 			
 			];
+			
 			return (
 				<Conteiner>
 					<Table style={{marginBottom:'100px'}}
@@ -155,6 +214,7 @@ class Students extends Component {
 						pagination= {false}
 					/>
 					{commonElements()}
+					{editModal()}
 				</Conteiner>
 			);
 		}
