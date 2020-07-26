@@ -72,7 +72,8 @@ public class StudentServiceImp implements StudentService{
         ofNullable(student.getEmail())
                 .filter(email -> !email.isEmpty() && !email.isBlank())
                 .ifPresent(email -> {
-                    boolean isTaken = emailValidator.test(email);
+//                    boolean isTaken = emailValidator.test(email);
+                    boolean isTaken = dataAccessService.selectExistsEmail(studentId, email);
                     if (!isTaken) {
                         dataAccessService.updateEmail(studentId, student.getEmail());
                     } else {
@@ -80,9 +81,9 @@ public class StudentServiceImp implements StudentService{
                     }
                 });
 
-        of(student.getGender().name().toUpperCase())
-                .filter(gender -> gender.equals("MALE") || gender.equals("FEMALE"))
-                .ifPresent(gender -> dataAccessService.updateGender(studentId, gender));
+        ofNullable(student.getGender())
+                .filter(gender -> gender.name().toUpperCase().equals("MALE") || gender.name().toUpperCase().equals("FEMALE"))
+                .ifPresent(gender -> dataAccessService.updateGender(studentId, gender.name().toUpperCase()));
 
     }
 }

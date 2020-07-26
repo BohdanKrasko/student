@@ -60,6 +60,21 @@ public class StudentDataAccessService {
                 (resultSet, i) -> resultSet.getBoolean(1));
 
     }
+    @SuppressWarnings("ConstantConditions")
+    public boolean selectExistsEmail(UUID studentId, String email) {
+        String sql = "" +
+                "SELECT EXISTS ( " +
+                "   SELECT 1 " +
+                "   FROM student " +
+                "   WHERE student_id != ? " +
+                "    AND email = ? " +
+                ")";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{studentId, email},
+                (resultSet, columnIndex) -> resultSet.getBoolean(1)
+        );
+    }
     void insertNewStudent(UUID studnetId, Student student) {
         String sql = "" +
                 "INSERT INTO student (student_id, first_name, last_name, email, gender) " +
@@ -145,4 +160,6 @@ public class StudentDataAccessService {
                                 .map(Integer::parseInt)
                                 .orElse(null));
     }
+
+
 }

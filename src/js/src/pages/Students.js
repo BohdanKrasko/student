@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import '../App.css';
-import { getAllStudents, deleteStudent } from '../client';
+import { getAllStudents, deleteStudent, updateStudent } from '../client';
 import Conteiner from '../Conteiner';
 import {
 	Table,
@@ -14,9 +14,9 @@ import { LoadingOutlined } from '@ant-design/icons';
 import Footer from '../Footer';
 import Modal from 'antd/lib/modal/Modal';
 import AddStudentForm from '../forms/AddStudentForms';
-import EditStudentForm from '../forms/EditStudentForm';
 import { errorNotification, successNotification } from '../notification';
 import { Link } from 'react-router-dom';
+import EditStudentForm from '../forms/EditStudentForm';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const textConfirm = 'Are you sure to delete this task?';
@@ -40,6 +40,7 @@ class Students extends Component {
 	closeAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: false})
 	closeEditStudentModal = () => this.setState({isEditStudentModalVisibil: false})
 
+	
 	deleteSt = (id, name) => {
         deleteStudent(id).then(() => {
 				successNotification(`You delete ${name}`, '')
@@ -50,6 +51,12 @@ class Students extends Component {
 		this.setState({selectedStudent})
 		this.openEditStudentModal()
 	}
+	updateStudentFormSubmitter  = s => {
+		updateStudent(s.studentId, s).then(() => {
+			this.closeEditStudentModal();
+			this.fetchStudents();
+		}).catch()
+	}
 	fetchStudents = () => {
 		this.setState({
 			isFetching: true
@@ -57,7 +64,6 @@ class Students extends Component {
 		getAllStudents()
 		.then(res => res.json()
 		.then(students => {
-			console.log(students)
 			this.setState({students, isFetching: false})
 		})).catch(error => {
 			const message = error.error.message;
@@ -127,7 +133,12 @@ class Students extends Component {
 						Submit
 					</Button>,
 					]}>
-					<EditStudentForm initialValues = {this.state.selectedStudent}></EditStudentForm>
+
+						<EditStudentForm 
+							initialValues= {this.state.selectedStudent}
+							submitter={this.updateStudentFormSubmitter}></EditStudentForm>
+
+					
 				</Modal>
 			</div>
 		)
@@ -178,7 +189,7 @@ class Students extends Component {
 				},
 				{
 					title: '',
-					key: 'test',
+					key: 'edit',
 					render: (text, student) => {
 						return (
 							<Button onClick={() => this.editStudent(student)}>Edit</Button>

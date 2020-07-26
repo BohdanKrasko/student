@@ -33,3 +33,12 @@ export const deleteStudent = studentId =>
     fetch(`/api/students/${studentId}`, {
         method: 'DELETE'
     }).then(checkStatus);
+
+export const updateStudent = (studnetId, student) => 
+    fetch(`/api/students/${studnetId}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'PUT',
+        body: JSON.stringify(student)
+    }).catch(checkStatus);
