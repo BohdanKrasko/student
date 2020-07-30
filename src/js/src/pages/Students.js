@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import '../App.css';
-import { getAllStudents, deleteStudent, updateStudent } from '../client';
+import { getAllStudents, deleteStudent, updateStudent, getOffsetStudents, getCountStudents } from '../client';
 import Conteiner from '../Conteiner';
 import {
 	Table,
@@ -17,6 +17,7 @@ import AddStudentForm from '../forms/AddStudentForms';
 import { errorNotification, successNotification } from '../notification';
 import { Link } from 'react-router-dom';
 import EditStudentForm from '../forms/EditStudentForm';
+import PagePagination from '../component/PagePagination';
 
 const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const textConfirm = 'Are you sure to delete this task?';
@@ -28,17 +29,36 @@ class Students extends Component {
 		selectedStudent: {},
 		isFetching: false,
 		isAddStuudentModalVisibility: false,
-		isEditStudentModalVisibil: false
+		isEditStudentModalVisibil: false,
+		offset: 0,
+		limit: 5,
+		count: 0
 	}
 	componentDidMount () {
-		this.fetchStudents();
-    }
+		//this.fetchStudents();
+		this.fetchOffsetStudents();
+		this.countStudent();
+	}
 
 	openAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: true})
 	openEditStudentModal = () => this.setState({isEditStudentModalVisibil: true})
 
 	closeAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: false})
 	closeEditStudentModal = () => this.setState({isEditStudentModalVisibil: false})
+
+	onChange = page => {
+		console.log(page);
+		this.setState({
+		  current: page,
+		});
+	  };
+	nextPage = () => {	
+		this.setState({offset: this.state.offset + this.state.limit}, () => this.fetchOffsetStudents())	
+	}
+	
+	previousPage = () => {
+		this.setState({offset: this.state.offset - this.state.limit}, () => this.fetchOffsetStudents())	
+	}
 
 	
 	deleteSt = (id, name) => {
@@ -51,11 +71,16 @@ class Students extends Component {
 		this.setState({selectedStudent})
 		this.openEditStudentModal()
 	}
-	updateStudentFormSubmitter  = s => {
-		updateStudent(s.studentId, s).then(() => {
+	updateStudentFormSubmitter  = student => {
+		updateStudent(student.studentId, student).then(() => {
 			this.closeEditStudentModal();
 			this.fetchStudents();
-		}).catch()
+			successNotification(`${student.firstName} was edited`);
+		}).catch(error => {
+			const message = error.error.message;
+			const description = error.error.error;
+			errorNotification(message, description);
+		})
 	}
 	fetchStudents = () => {
 		this.setState({
@@ -74,11 +99,32 @@ class Students extends Component {
 			})
 		})
 	}
+	fetchOffsetStudents = () => {
+		this.setState({
+			isFetching: true
+		});
+		const { offset, limit } = this.state;
+		getOffsetStudents(offset, limit)
+			.then(res => res.json())
+			.then(students => {
+				this.setState({students, isFetching: false})
+			}).catch(err => {
+				console.log(err);
+			})
+			this.countStudent();
+	}
+
+	countStudent = () => {
+		getCountStudents()
+			.then(res => res.json())
+			.then(count => this.setState({count}))	
+	}
+	
 	
 	render() {
 
 		
-		const {students, isFetching, isAddStuudentModalVisibility, isEditStudentModalVisibil} = this.state;
+		const {students, isFetching, isAddStuudentModalVisibility, isEditStudentModalVisibil, offset} = this.state;
 		if(isFetching) {
 			return (
 				<div className='spinner'>
@@ -110,8 +156,9 @@ class Students extends Component {
 								errorNotification(message, description);
 							}}
 							/>
-					</Modal >
-				<Footer numberOfStudents={students.length}
+								
+					</Modal>
+				<Footer numberOfStudents={this.state.count}
 				handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
 
 			</div>
@@ -125,14 +172,8 @@ class Students extends Component {
 					onOk={this.closeEditStudentModal}
 					onCancel={this.closeEditStudentModal}
 					width={1000}
-					footer={[
-					<Button key="back" onClick={this.closeEditStudentModal}>
-						Return
-					</Button>,
-					<Button key="submit" type="primary">
-						Submit
-					</Button>,
-					]}>
+					cancelText={true}
+					okText={true}>
 
 						<EditStudentForm 
 							initialValues= {this.state.selectedStudent}
@@ -224,7 +265,14 @@ class Students extends Component {
 						rowKey='studentId'
 						pagination= {false}
 					/>
+					
 					{commonElements()}
+					<PagePagination
+						nextPage={() => this.nextPage()}
+						numberOfStudents={this.state.count}
+						previousPage={this.previousPage}
+						offset={this.state.offset}/>
+
 					{editModal()}
 				</Conteiner>
 			);

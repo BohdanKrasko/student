@@ -16,6 +16,12 @@ const checkStatus = response => {
 export const getAllStudents = ()  => 
     fetch('/api/students').then(checkStatus);
 
+export const getOffsetStudents = (offset, limit) => 
+    fetch(`/api/students/${offset}/${limit}`, {
+        method: 'GET'
+    })
+    .then(checkStatus);
+
 export const getAllStudentCourse = (studentId) => 
     fetch(`/api/students/${studentId}/course`)
     .then(checkStatus);
@@ -41,4 +47,7 @@ export const updateStudent = (studnetId, student) =>
         },
         method: 'PUT',
         body: JSON.stringify(student)
-    }).catch(checkStatus);
+    }).then(checkStatus);
+
+    export const getCountStudents = () => 
+        fetch('/api/students/count').then(checkStatus);

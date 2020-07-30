@@ -23,7 +23,7 @@ import java.util.UUID;
 public class StudentController {
 
     private final StudentService studentService;
-
+    
     @Autowired
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
@@ -38,7 +38,10 @@ public class StudentController {
     public List<StudentCourse> getAllStudentCourse(@PathVariable("studentId") UUID studentId) {
         return studentService.getAllStudentCourse(studentId);
     }
-
+    @GetMapping(path = "{start}/{limit}")
+    public List<Student> offsetStudents(@PathVariable("start") int start, @PathVariable("limit") int limit) {
+        return studentService.offsetStudents(start, limit);
+    }
     @PostMapping
     public void addNewStudent(@RequestBody @Valid Student student) {
         studentService.addNewStudent(student);
@@ -52,6 +55,11 @@ public class StudentController {
     @PutMapping(path = "{studentId}")
     public void updateStudent(@PathVariable("studentId") UUID studentId, @RequestBody Student student) {
         studentService.updateStudent(studentId, student);
+    }
+
+    @GetMapping("count")
+    int countStudents() {
+        return studentService.countStudents();
     }
 
 }

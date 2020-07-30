@@ -22,15 +22,21 @@ public class StudentServiceImp implements StudentService{
 
     @Autowired
     public StudentServiceImp(StudentDataAccessService dataAccessService,
-                             EmailValidator emailValidationService) {
+                             EmailValidator emailValidator) {
         this.dataAccessService = dataAccessService;
-        this.emailValidator = emailValidationService;
+        this.emailValidator = emailValidator;
     }
 
     @Override
     public List<Student> getAllStudent() {
        return ofNullable(dataAccessService.selectAllStudents())
                .orElseThrow(() -> new ApiRequstExeption("Opps something wrong"));
+    }
+
+    @Override
+    public List<Student> offsetStudents(int start, int limit) {
+        return ofNullable(dataAccessService.offsetStudents(start, limit))
+                .orElseThrow(() -> new ApiRequstExeption("We wasn't found any student"));
     }
 
     @Override
@@ -72,9 +78,12 @@ public class StudentServiceImp implements StudentService{
         ofNullable(student.getEmail())
                 .filter(email -> !email.isEmpty() && !email.isBlank())
                 .ifPresent(email -> {
-//                    boolean isTaken = emailValidator.test(email);
                     boolean isTaken = dataAccessService.selectExistsEmail(studentId, email);
+                    if (!emailValidator.test(email)) {
+                        throw new ApiEmailExeption(student.getEmail() + " is not valid");
+                    }
                     if (!isTaken) {
+
                         dataAccessService.updateEmail(studentId, student.getEmail());
                     } else {
                         throw new ApiEmailExeption("Email already in use: " + email);
@@ -85,5 +94,10 @@ public class StudentServiceImp implements StudentService{
                 .filter(gender -> gender.name().toUpperCase().equals("MALE") || gender.name().toUpperCase().equals("FEMALE"))
                 .ifPresent(gender -> dataAccessService.updateGender(studentId, gender.name().toUpperCase()));
 
+    }
+
+    @Override
+    public int countStudents() {
+        return dataAccessService.countStudents();
     }
 }
