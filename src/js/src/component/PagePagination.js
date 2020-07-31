@@ -7,8 +7,8 @@ const PagePagination = props => (
         <Conteiner>
         { props.offset !== 0 ? 
             <Button  onClick={props.previousPage} >{'<'}</Button> : <Button disabled>{'<'}</Button>}
-            <Button>{(props.offset / 5) + 1}</Button>
-           { props.offset+5 < props.numberOfStudents  ? 
+            <Button>{(props.offset / props.limit) + 1}</Button>
+           { props.offset+props.limit < props.numberOfStudents  ? 
             <Button id='next' onClick={props.nextPage}>{'>'}</Button> : <Button disabled>{'>'}</Button>}
         </Conteiner>
     </div>

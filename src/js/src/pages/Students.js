@@ -23,6 +23,7 @@ const antIcon = () => <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const textConfirm = 'Are you sure to delete this task?';
 
 class Students extends Component {
+	_isMounted = false;
 
 	state = {
 		students: [],
@@ -32,13 +33,16 @@ class Students extends Component {
 		isEditStudentModalVisibil: false,
 		offset: 0,
 		limit: 5,
-		count: 0
+		count: 0,
+		isShowLess: false
 	}
 	componentDidMount () {
-		//this.fetchStudents();
 		this.fetchOffsetStudents();
-		this.countStudent();
+		this._isMounted = true;
 	}
+	componentWillUnmount() {
+		this._isMounted = false;
+	  }
 
 	openAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: true})
 	openEditStudentModal = () => this.setState({isEditStudentModalVisibil: true})
@@ -46,12 +50,7 @@ class Students extends Component {
 	closeAddStuudentModal = () => this.setState({isAddStuudentModalVisibility: false})
 	closeEditStudentModal = () => this.setState({isEditStudentModalVisibil: false})
 
-	onChange = page => {
-		console.log(page);
-		this.setState({
-		  current: page,
-		});
-	  };
+
 	nextPage = () => {	
 		this.setState({offset: this.state.offset + this.state.limit}, () => this.fetchOffsetStudents())	
 	}
@@ -64,7 +63,11 @@ class Students extends Component {
 	deleteSt = (id, name) => {
         deleteStudent(id).then(() => {
 				successNotification(`You delete ${name}`, '')
-				this.fetchStudents()}
+				if(this.state.limit === this.state.count) {
+					this.fetchStudents();
+				} else {
+					this.fetchOffsetStudents();
+				}}
 		).catch(err => {console.log(err);})
 	}
 	editStudent = selectedStudent => {
@@ -74,7 +77,12 @@ class Students extends Component {
 	updateStudentFormSubmitter  = student => {
 		updateStudent(student.studentId, student).then(() => {
 			this.closeEditStudentModal();
-			this.fetchStudents();
+			if(this.state.limit === this.state.count) {
+				this.fetchStudents();
+			} else {
+				this.fetchOffsetStudents();
+			}
+			
 			successNotification(`${student.firstName} was edited`);
 		}).catch(error => {
 			const message = error.error.message;
@@ -86,10 +94,11 @@ class Students extends Component {
 		this.setState({
 			isFetching: true
 		});
+		this.countStudent();
 		getAllStudents()
 		.then(res => res.json()
 		.then(students => {
-			this.setState({students, isFetching: false})
+			this.setState({students, isFetching: false, offset: 0, limit: this.state.count, isShowLess: true}, () => console.log(students))
 		})).catch(error => {
 			const message = error.error.message;
 			const description = error.error.error;
@@ -104,14 +113,18 @@ class Students extends Component {
 			isFetching: true
 		});
 		const { offset, limit } = this.state;
+		this.countStudent();
 		getOffsetStudents(offset, limit)
 			.then(res => res.json())
 			.then(students => {
-				this.setState({students, isFetching: false})
+				this.setState({students, isFetching: false, isShowLess: false})
 			}).catch(err => {
 				console.log(err);
 			})
-			this.countStudent();
+	}
+
+	showLess = () => {
+		this.setState({limit: 5}, () => this.fetchOffsetStudents())
 	}
 
 	countStudent = () => {
@@ -124,7 +137,7 @@ class Students extends Component {
 	render() {
 
 		
-		const {students, isFetching, isAddStuudentModalVisibility, isEditStudentModalVisibil, offset} = this.state;
+		const {students, isFetching, isAddStuudentModalVisibility, isEditStudentModalVisibil, offset, limit, count} = this.state;
 		if(isFetching) {
 			return (
 				<div className='spinner'>
@@ -158,8 +171,12 @@ class Students extends Component {
 							/>
 								
 					</Modal>
-				<Footer numberOfStudents={this.state.count}
-				handleAddStudentClickEvent={this.openAddStuudentModal}></Footer>
+				<Footer
+					numberOfStudents={this.state.count}
+					handleAddStudentClickEvent={this.openAddStuudentModal}
+					fetchStudents={this.fetchStudents}
+					isShowLess={this.state.isShowLess}
+					showLess={this.showLess}></Footer>
 
 			</div>
 		)
@@ -269,9 +286,10 @@ class Students extends Component {
 					{commonElements()}
 					<PagePagination
 						nextPage={() => this.nextPage()}
-						numberOfStudents={this.state.count}
+						numberOfStudents={count}
 						previousPage={this.previousPage}
-						offset={this.state.offset}/>
+						offset={offset}
+						limit={limit}/>
 
 					{editModal()}
 				</Conteiner>

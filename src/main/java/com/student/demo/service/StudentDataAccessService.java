@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -171,12 +170,9 @@ public class StudentDataAccessService {
                 new Object[] {start, limit},
                 mapStudentFromDb());
     }
-
+    @SuppressWarnings("ConstantConditions")
     int countStudents() {
-        //SELECT COUNT(student_id) FROM student;
-        String sql = "" +
-                "SELECT COUNT(student_id) FROM student";
-        //jdbcTemplate.query(sql, ResultSet::getInt);
+        String sql = "SELECT COUNT(student_id) FROM student";
         return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getInt(1));
     }
 }

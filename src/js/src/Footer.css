@@ -7,6 +7,7 @@
     height: 5em;
     padding: 1em;
     text-align: center;
+    z-index: 1;
 }
 .pagePagination {
     position: relative;
@@ -16,4 +17,5 @@
     margin-top: -7em;
     text-align: right;
     margin-bottom: 2em;
+   
 }

@@ -11,6 +11,7 @@ public interface StudentService {
     List<Student> getAllStudent();
 
     List<Student> offsetStudents(int start, int limit);
+
     void addNewStudent(Student student);
 
     List<StudentCourse> getAllStudentCourse(UUID studentId);
