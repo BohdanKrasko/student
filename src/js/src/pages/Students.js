@@ -160,7 +160,11 @@ class Students extends Component {
 							onSuccess = {() =>
 							{
 								this.closeAddStuudentModal();
-								this.fetchStudents();
+								if(this.state.limit === this.state.count) {
+									this.fetchStudents();
+								} else {
+									this.fetchOffsetStudents();
+								}
 								successNotification('Congratulation!', 'You successfully added new student');
 							}}
 							onFailuer = {error => {
