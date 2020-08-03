@@ -6,23 +6,23 @@ import java.util.UUID;
 
 public class Profile {
 
-    private UUID id;
+    private UUID profileId;
     private String username;
     private  String imageLink; // S3 key
 
-    public Profile(UUID id, String username, String imageLink) {
-        this.id = id;
+    public Profile(UUID profileId, String username, String imageLink) {
+        this.profileId = profileId;
         this.username = username;
         this.imageLink = imageLink;
     }
 
 
-    public UUID getId() {
-        return id;
+    public UUID getProfileId() {
+        return profileId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setProfileId(UUID profileId) {
+        this.profileId = profileId;
     }
 
     public String getUsername() {
@@ -46,14 +46,14 @@ public class Profile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Profile profile = (Profile) o;
-        return Objects.equals(id, profile.id) &&
+        return Objects.equals(profileId, profile.profileId) &&
                 Objects.equals(username, profile.username) &&
                 Objects.equals(imageLink, profile.imageLink);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, imageLink);
+        return Objects.hash(profileId, username, imageLink);
     }
 
 }
