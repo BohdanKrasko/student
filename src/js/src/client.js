@@ -49,5 +49,19 @@ export const updateStudent = (studnetId, student) =>
         body: JSON.stringify(student)
     }).then(checkStatus);
 
-    export const getCountStudents = () => 
-        fetch('/api/students/count').then(checkStatus);
+export const getCountStudents = () => 
+    fetch('/api/students/count').then(checkStatus);
+
+export const getProfiles = () => 
+    fetch('/v1/profile/get/all').then(checkStatus);
+
+export const uploadUserProfileImage = (userProfileId, formData) => 
+    fetch(`/v1/profile/${userProfileId}/image/upload`, 
+        {
+            method: 'POST',
+            body: formData
+    }).then(checkStatus);
+
+    // headers: {
+    //     'Content-Type': 'multipart/form-data'
+    // },
