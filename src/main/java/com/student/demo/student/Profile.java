@@ -6,9 +6,9 @@ import java.util.UUID;
 
 public class Profile {
 
-    private UUID profileId;
-    private String username;
-    private  String imageLink; // S3 key
+    private final UUID profileId;
+    private final String username;
+    private final String imageLink; // S3 key
 
     public Profile(UUID profileId, String username, String imageLink) {
         this.profileId = profileId;
@@ -21,25 +21,14 @@ public class Profile {
         return profileId;
     }
 
-    public void setProfileId(UUID profileId) {
-        this.profileId = profileId;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public Optional<String> getImageLink() {
         return Optional.ofNullable(imageLink);
     }
 
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
-    }
 
     @Override
     public boolean equals(Object o) {

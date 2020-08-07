@@ -37,4 +37,33 @@ public class ProfileDataAccessService {
                 resultSet.getString("image_link"));
     }
 
+    @SuppressWarnings("ConstantConditions")
+    public boolean isProfileExists(UUID userProfileId) {
+        //SELECT EXISTS(SELECT 1 FROM profile WHERE profile_id = ?);
+        String sql = "SELECT EXISTS(SELECT 1 FROM profile WHERE profile_id = ?)";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{userProfileId},
+                (resultSet, i) -> resultSet.getBoolean(1));
+    }
+
+    public void updateImageLink(UUID userProfileId, String imageLink) {
+        //UPDATE profile SET image_link = 'link' WHERE profile_id = 'def6eb96-3ad8-4547-a2f7-420a155cbacc';
+        String sql = "" +
+                "UPDATE profile SET image_link = ? WHERE profile_id = ?";
+
+        jdbcTemplate.update(sql, imageLink, userProfileId);
+    }
+
+    public String selectImageLink(UUID userProfileId) {
+        //SELECT profile.image_link FROM profile WHERE profile_id = ?;
+        String sql = "" +
+                "SELECT profile.image_link FROM profile WHERE profile_id = ?";
+
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{userProfileId},
+                (resultSet, i) -> resultSet.getString(1));
+    }
+
 }

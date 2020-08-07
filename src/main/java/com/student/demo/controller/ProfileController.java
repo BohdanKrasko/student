@@ -40,4 +40,8 @@ public class ProfileController {
                                        @RequestParam("file") MultipartFile file) {
         profileService.uploaProfileImage(userProfileId, file);
     }
+    @GetMapping(path = "{userProfileId}/image/download")
+    public byte[] downloadUserProfileImage(@PathVariable("userProfileId") UUID userProfileId) {
+        return profileService.downloadUserProfileImage(userProfileId);
+    }
 }

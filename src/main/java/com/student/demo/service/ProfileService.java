@@ -11,4 +11,6 @@ public interface ProfileService {
     List<Profile> getUsers();
 
     void uploaProfileImage(UUID userProfileId, MultipartFile file);
+
+    byte[] downloadUserProfileImage(UUID userProfileId);
 }

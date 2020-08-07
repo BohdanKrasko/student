@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback} from 'react';
 import { getProfiles, uploadUserProfileImage } from '../client';
-import { useDropzone } from 'react-dropzone'
+import { useDropzone } from 'react-dropzone';
+import '../css/Profile.css';
 const Profiles = () => {
 
     const [profiles, setProfiles] = useState([]);
@@ -18,6 +19,7 @@ const Profiles = () => {
     return profiles.map((profile, index) => {
         return (
             <div key={index}>
+              {profile.profileId ? <img src={`/v1/profile/${profile.profileId}/image/download`}/> : null}
                 <br/>
                 <br/>
                 <h1>{profile.username}</h1>
@@ -35,7 +37,7 @@ function Dropzone({profileId}) {
       console.log(file);
       const formData = new FormData();
       formData.append('file', file);
-      uploadUserProfileImage(profileId, formData).then(res => res.json()).then(p => console.log(p))
+      uploadUserProfileImage(profileId, formData);
 
     }, [])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
