@@ -68,10 +68,17 @@
 			<version>3.11</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.831</version>
+		</dependency>
+
+
 	</dependencies>
 	<profiles>
 		<profile>
-			<id>demo</id>
+			<profileId>demo</profileId>
 			<build>
 				<plugins>
 
@@ -84,7 +91,7 @@
 						</configuration>
 						<executions>
 							<execution>
-								<id>install node</id>
+								<profileId>install node</profileId>
 								<goals>
 									<goal>install-node-and-yarn</goal>
 								</goals>
@@ -94,14 +101,14 @@
 								</configuration>
 							</execution>
 							<execution>
-								<id>yarn install</id>
+								<profileId>yarn install</profileId>
 								<goals>
 									<goal>yarn</goal>
 								</goals>
 								<phase>generate-resources</phase>
 							</execution>
 							<execution>
-								<id>yarn test</id>
+								<profileId>yarn test</profileId>
 								<goals>
 									<goal>yarn</goal>
 								</goals>
@@ -114,7 +121,7 @@
 								</configuration>
 							</execution>
 							<execution>
-								<id>yarn build</id>
+								<profileId>yarn build</profileId>
 								<goals>
 									<goal>yarn</goal>
 								</goals>
@@ -129,7 +136,7 @@
 						<artifactId>maven-resources-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>copy-resources</id>
+								<profileId>copy-resources</profileId>
 								<phase>process-classes</phase>
 								<goals>
 									<goal>copy-resources</goal>
